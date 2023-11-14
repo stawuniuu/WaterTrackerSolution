@@ -38,12 +38,12 @@ update-database
 ```
 policy.WithOrigins("yourHttpUrl", "youHttpsrUrl")
 ```
-!remember to NOT include "/" at the end !
+!!! remember to NOT include "/" at the end !!!
 6. In WaterTrackerSolution\WaterTracker.API\program cs insert your URL in the following code to set base URL of Blazor component to the same as API component:
 ```
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("yourHttpsUrl") });
 ```
-!remember to include "/" at the end !
+!!! remember to include "/" at the end !!! <br>
 
 ## Known issues
 1. When deleting User entry system does not delete corresponding WaterIntake entries. This causes an issue where there is a WaterIntake record that can be viewed, edited or removed throught web UI, it has to be removed manually directly in the database.
