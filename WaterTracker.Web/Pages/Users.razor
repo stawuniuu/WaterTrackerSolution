@@ -1,0 +1,56 @@
+﻿@page "/"
+@inherits UsersBase
+@using WaterTracker.Web.Pages.Components
+
+@if(Users == null || Users.Any() == false)
+{
+    <h3>Loading users...</h3>
+}
+else
+{
+    <div class="row">
+        <div class="col-lg-8">
+            <div id="usersTable" class="card">
+                <div class="card-header">
+                    Users
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Surname</th>
+                                <th>Email</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Users)
+                            {
+                                <tr>
+                                    <td>@user.Id</td>
+                                    <td>@user.Firstname</td>
+                                    <td>@user.Surname</td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        <NavLink class="btn btn-primary btn-sm" href='@string.Format("UserDetails/{0}", user.Id)'>
+                                            View details
+                                        </NavLink>
+                                    </td>
+                                </tr>
+                            }
+                        
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <AddUserForm></AddUserForm>
+        </div>
+    </div>
+    <div>&nbsp;</div>
+}
+

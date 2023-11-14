@@ -1,0 +1,142 @@
+﻿@page "/UserDetails/{Id:int}"
+@inherits UserDetailsBase
+@using WaterTracker.Web.Pages.Components
+
+@if (User == null && ErrorMessage == null)
+{
+    <h3>Loading user details...</h3>
+}
+else if(ErrorMessage != null)
+{
+    <h3 class="text-danger">@ErrorMessage</h3>
+}
+else
+{
+     <div class="row">
+        <div class="col-lg-8">
+            <div id="userdetails" class="card mb-5">
+                <div class="card-header">
+                    User Details
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <h3>@User.Firstname @User.Surname</h3>
+                        <p>User ID: @User.Id</p>
+                        <p>Email: @User.Email</p>
+                    </div>
+                    <div>
+                        <button @onclick="(() => OpenPopup(User))"
+                                class="btn btn-primary me-2">
+                            Edit
+                        </button>
+                        <button @onclick="(() => DeleteUser(User.Id))"
+                                class="btn btn-danger">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <AddIntakeForm></AddIntakeForm>
+        </div>
+    </div>
+    
+    <div id="userIntakesTable" class="card">
+        <div class="card-header">
+            User Intakes
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Water Consumption (ml)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                        @foreach (var intake in Intakes)
+                    {
+                            <tr>
+                                <td>@intake.Id</td>
+                                <td>@intake.IntakeDate.ToShortDateString()</td>
+                                <td>@intake.ConsumedWater</td>
+                                <td>
+                                    <nav class="flex-column">
+                                        <div class="nav-item">
+                                        <NavLink class="nav-link" href='@string.Format("IntakeDetails/{0}", intake.Id)'>
+                                                View details
+                                            </NavLink>
+                                        </div>
+                                    </nav>
+                                </td>
+                            </tr>
+                    }
+                        
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+}
+
+@if (ShowPopup)
+{
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="close" @onclick="ClosePopup" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@User">
+                        <div class="form-group">
+                            <label for="FirstName">First Name</label>
+                            <InputText id="FirstName" class="form-control" @bind-Value="User.Firstname" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Surname">Surname</label>
+                            <InputText id="Surname" class="form-control" @bind-Value="User.Surname" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Email">Email</label>
+                            <InputText id="Email" class="form-control" @bind-Value="User.Email" />
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="ClosePopup">Cancel</button>
+                    <button class="btn btn-primary" @onclick="SubmitForm">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+}
+
+@code {
+    public bool ShowPopup { get; set; }
+
+    public void OpenPopup(UserDto data)
+    {
+        User = data;
+        ShowPopup = true;
+    }
+
+    public void ClosePopup()
+    {
+        ShowPopup = false;
+    }
+
+    private async Task SubmitForm()
+    {
+        await EditUser(User);
+        ClosePopup();
+    }
+    }

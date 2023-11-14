@@ -1,0 +1,55 @@
+﻿@page "/waterintakes"
+@inherits WaterIntakeBase
+@using WaterTracker.Web.Pages.Components
+
+@if (Intakes == null || Intakes.Any() == false)
+{
+    <h3>Loading records...</h3>
+}
+else
+{
+    <div class="row">
+        <div class="col-lg-8">
+            <div id="intakesTable" class="card">
+                <div class="card-header">
+                    Users
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>UserID</th>
+                                <th>Date</th>
+                                <th>Water Consumption (ml)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @foreach (var intake in Intakes)
+                            {
+                                    <tr>
+                                        <td>@intake.Id</td>
+                                        <td>@intake.UserId</td>
+                                        <td>@intake.IntakeDate.ToShortDateString()</td>
+                                        <td>@intake.ConsumedWater</td>
+                                        <td>
+                                            <NavLink class="btn btn-primary btn-sm" href='@string.Format("IntakeDetails/{0}", intake.Id)'>
+                                                View details
+                                            </NavLink>
+                                        </td>
+                                    </tr>
+                            }
+                        
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <AddIntakeForm></AddIntakeForm>
+        </div>
+    </div>
+    <div>&nbsp;</div>
+}

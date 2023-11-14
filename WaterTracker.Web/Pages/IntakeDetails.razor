@@ -1,0 +1,121 @@
+﻿@page "/IntakeDetails/{Id:int}"
+@inherits IntakeDetailsBase
+
+@if (Intake == null && ErrorMessage == null)
+{
+    <h3>Loading intake details...</h3>
+}
+else if (ErrorMessage != null)
+{
+    <h3 class="text-danger">@ErrorMessage</h3>
+}
+else
+{
+    <div class="row">
+        <div id="intakedetails" class="card mb-5">
+            <div class="card-header">
+                Intake Details
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <h3>Intake ID: @Intake.Id</h3>
+                    <p>Date: @Intake.IntakeDate.ToShortDateString()</p>
+                    <p>Consumed Water (ml): @Intake.ConsumedWater</p>
+                </div>
+                <div>
+                    <button @onclick="(() => OpenPopup(Intake))"
+                            class="btn btn-primary me-2">
+                        Edit
+                    </button>
+                    <button @onclick="(() => DeleteIntake(Intake.Id))"
+                            class="btn btn-danger">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row">
+        <div id="userdetails" class="card">
+            <div class="card-header">
+                User Details
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <h3>@User.Firstname @User.Surname</h3>
+                    <p class="mb-4">User ID: @User.Id</p>
+                    <p class="mb-4">Email: @User.Email</p>
+                </div>
+            </div>
+            <nav class="flex-column">
+                <div class="nav-item">
+                    <NavLink class="nav-link" href='@string.Format("UserDetails/{0}", User.Id)'>
+                        View details
+                    </NavLink>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    
+}
+
+@if (ShowPopup)
+{
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edytuj Intake</h5>
+                    <button type="button" class="close" @onclick="ClosePopup" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@Intake">
+                        <div class="form-group">
+                            <label for="Date">Date</label>
+                            <InputDate id="Date" class="form-control" @bind-Value="Intake.IntakeDate" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ConsumedWater">Consumed Water</label>
+                            <InputNumber id="ConsumedWater" class="form-control" @bind-Value="Intake.ConsumedWater" />
+                        </div>
+                        <div class="form-group">
+                            <label for="UserId">User ID</label>
+                            <InputNumber id="UserId" class="form-control" @bind-Value="Intake.UserId" />
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="ClosePopup">Cancel</button>
+                    <button class="btn btn-primary" @onclick="SubmitForm">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+}
+
+@code {
+    public bool ShowPopup { get; set; }
+
+    public void OpenPopup(WaterIntakeDto data)
+    {
+        Intake = data;
+        ShowPopup = true;
+    }
+
+    public void ClosePopup()
+    {
+        ShowPopup = false;
+    }
+
+    private async Task SubmitForm()
+    {
+        await EditIntake(Intake);
+        ClosePopup();
+    }
+}

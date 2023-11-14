@@ -1,0 +1,37 @@
+﻿@inherits UsersBase
+
+<div id="addUser-container" class="card">
+    <div class="card-header">
+        Add a new user
+    </div>
+    <div class="card-body">
+        <EditForm Model="@userDto" OnValidSubmit="@HandleSubmit">
+            <div class="form-group">
+                <label for="firstnameInput">First Name</label>
+                <InputText class="form-control" id="firstnameInput" @bind-Value="userDto.Firstname" />
+            </div>
+            <div class="form-group">
+                <label for="surnameInput">Surname</label>
+                <InputText class="form-control" id="surnameInput" @bind-Value="userDto.Surname" />
+            </div>
+            <div class="form-group">
+                <label for="emailInput">Email address</label>
+                <InputText class="form-control" id="emailInput" @bind-Value="userDto.Email" />
+            </div>
+            
+            <div>
+                <button type="submit" id="submitUser" class="btn btn-primary">Submit</button>
+            </div>
+        </EditForm>
+
+    </div>
+</div>
+
+@code {
+    UserDto userDto = new UserDto ();
+
+    public async Task HandleSubmit()
+    {
+        await AddUser(userDto);
+    }
+}
