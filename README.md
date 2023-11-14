@@ -44,3 +44,6 @@ policy.WithOrigins("yourHttpUrl", "youHttpsrUrl")
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("yourHttpsUrl") });
 ```
 !remember to include "/" at the end !
+
+## Known issues
+1. When deleting User entry system does not delete corresponding WaterIntake entries. This causes an issue where there is a WaterIntake record that can be viewed, edited or removed throught web UI, it has to be removed manually directly in the database.
